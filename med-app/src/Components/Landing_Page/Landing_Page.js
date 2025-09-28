@@ -4,6 +4,7 @@ import "./LandingPage.css"; // Importing the CSS styles for the Landing_Page com
 
 // Defining the Function component Landing_Page
 const Landing_Page = () => {
+   //sessionStorage.clear();
   return (
     <section className="hero-section"> {/* Creating a section with class name 'hero-section' */}
       <div>
