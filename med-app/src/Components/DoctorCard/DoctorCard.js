@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import './DoctorCardIC.css';
-import AppointmentFormIC from '../AppointmentFormIC/AppointmentFormIC'
+import './DoctorCard.css';
+import AppointmentForm from '../AppointmentForm/AppointmentForm'
 import { v4 as uuidv4 } from 'uuid';
 
 
-const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => {
+const DoctorCard = ({ name, speciality, experience, ratings, profilePic }) => {
   const [showModal, setShowModal] = useState(false);
   const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    // Retrieve stored username, doctor data, and appointment data from sessionStorage and localStorage
+    const storedAppointmentData = JSON.parse(localStorage.getItem('doctorData'));
+    // Set appointmentData state if storedAppointmentData exists
+    if (storedAppointmentData) {
+      //setAppointments(storedAppointmentData);
+      console.log(storedAppointmentData)
+    }
+  }, []); // Empty dependency array ensures useEffect runs only once after initial render
 
   const handleBooking = () => {
     setShowModal(true);
@@ -17,16 +27,29 @@ const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => 
   const handleCancel = (appointmentId) => {
     const updatedAppointments = appointments.filter((appointment) => appointment.id !== appointmentId);
     setAppointments(updatedAppointments);
+    localStorage.removeItem('doctorName');
+    localStorage.removeItem('doctorSpeciality');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('name');
+    localStorage.removeItem('appointmentDate');
+    localStorage.removeItem('selectedSlot');
+    localStorage.removeItem('experience');
+    localStorage.removeItem('ratings');
+     localStorage.removeItem('doctorData');
+    console.log(appointmentId);   
   };
 
   const handleFormSubmit = (appointmentData) => {
     const newAppointment = {
-      id: uuidv4(),
-      ...appointmentData,
+      id: 1,
+      name,
+      speciality,
     };
     const updatedAppointments = [...appointments, newAppointment];
     setAppointments(updatedAppointments);
     setShowModal(false);
+    localStorage.setItem('doctorData', JSON.stringify(updatedAppointments));
+    console.log(appointmentData);
   };
 
   return (
@@ -49,8 +72,6 @@ const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => 
             </button>
               </div> */}
       </div>
-
-
       <div className="doctor-card-options-container">
        <Popup
           style={{ backgroundColor: '#FFFFFF' }}
@@ -81,7 +102,6 @@ const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => 
                   <div className="doctor-card-detail-consultationfees">Ratings: {ratings}</div>
                 </div>
               </div>
-
               {appointments.length > 0 ? (
                 <>
                   <h3 style={{ textAlign: 'center' }}>Appointment Booked!</h3>
@@ -89,12 +109,15 @@ const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => 
                     <div className="bookedInfo" key={appointment.id}>
                       <p>Name: {appointment.name}</p>
                       <p>Phone Number: {appointment.phoneNumber}</p>
+                      <p>Date: {appointment.appointmentDate}</p>
+                      <p>Time Slot: {appointment.selectedSlot}</p>
                       <button onClick={() => handleCancel(appointment.id)}>Cancel Appointment</button>
                     </div>
                   ))}
                 </>
               ) : (
-                <AppointmentFormIC doctorName={name} doctorSpeciality={speciality} onSubmit={handleFormSubmit} />
+                <AppointmentForm doctorName={name} doctorSpeciality={speciality}
+                 experience={experience} rating={ratings} onSubmit={handleFormSubmit} />
               )}
             </div>
           )}
@@ -104,4 +127,4 @@ const DoctorCardIC = ({ name, speciality, experience, ratings, profilePic }) => 
   );
 };
 
-export default DoctorCardIC;
+export default DoctorCard;

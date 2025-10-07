@@ -107,7 +107,10 @@ router.post('/login', [
                     }
                 }
                 const authtoken = jwt.sign(payload, JWT_SECRET);
-                return res.status(200).json({ authtoken });
+                return res.status(200).json({ authtoken,
+                                              name: theUser.name, 
+                                              phone: theUser.phone 
+                                      });
             } else {
                 return res.status(403).json({ error: "Invalid Credentials" });
             }

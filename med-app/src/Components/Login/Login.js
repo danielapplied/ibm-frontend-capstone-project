@@ -1,70 +1,71 @@
 // Following code has been commented with appropriate comments for your reference.
 import React, { useState, useEffect } from 'react';
 // Apply CSS according to your design theme or the CSS provided in week 2 lab 2
-//import { useAppContext } from '../../context/AuthContext';
+
 import { Link, useNavigate } from 'react-router-dom';
 import { API_URL } from '../../config';
 
 const Login = () => {
 
+  // State variables for email and password
+  const [password, setPassword] = useState("");
   const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    //Step 1 - Task 4
-    const [incorrect, setIncorrect] = useState('');
-    //Step 1 - Task 5
-    const navigate = useNavigate();
-    const bearerToken = sessionStorage.getItem('bearer-token');
-    //const { setIsLoggedIn } = useAppContext();
+  const [incorrect, setIncorrect] = useState('');
 
-    //Step 1 - Task 6
-    useEffect(() => {
-        if (sessionStorage.getItem('auth-token')) {
-          navigate('/app')
+  // Get navigation function from react-router-dom
+  const navigate = useNavigate();
+
+  // Check if user is already authenticated, then redirect to home page
+  useEffect(() => {
+    if (sessionStorage.getItem("auth-token")) {
+      navigate("/");
+     }
+   }, []);
+
+  // Function to handle login form submission
+  const login = async (e) => {
+    e.preventDefault();
+    // Send a POST request to the login API endpoint
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+    // Parse the response JSON
+     const json = await res.json();
+     console.log(json);
+   //
+    if (json.authtoken) {
+      // If authentication token is received, store it in session storage
+      sessionStorage.setItem('auth-token', json.authtoken);
+      sessionStorage.setItem('email', email);
+      sessionStorage.setItem("phone", json.phone);
+      sessionStorage.setItem("name", json.name);
+      sessionStorage.setItem("loggedIn", Boolean(true).toString());
+      setIncorrect('');
+      // Redirect to home page and reload the window
+      navigate('/');
+      window.location.reload();
+    } else {
+      // Handle errors if authentication fails
+      setIncorrect('Invalid Credentials');
+      setTimeout(() => {
+               setIncorrect("");
+             }, 15000);
+      if (json.errors) {
+        for (const error of json.errors) {
+          console.log(error.msg)  //alert(error.msg);
         }
-      }, [navigate])
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        //api call
-        const res = await fetch(`${API_URL}/api/auth/login`, {
-            //Step 1 - Task 7
-            method: 'POST',
-            //Step 1 - Task 8
-          headers: {
-            "content-type": "application/json; charset=utf-8",
-            'Authorization': bearerToken ? `Bearer ${bearerToken}` : '', // Include Bearer token if available
-          },
-        //Step 1 - Task 9
-          body: JSON.stringify({
-            email,
-            password
-          })
-        });
-
-        //Step 2: Task 1
-        const json = await res.json();
-        console.log('Json',json);
-        if (json.authtoken) {
-            //Step 2: Task 2
-          sessionStorage.setItem('auth-token', json.authtoken);
-          sessionStorage.setItem('name', json.userName);
-          sessionStorage.setItem('email', json.userEmail);
-            //Step 2: Task 3
-         // setIsLoggedIn(true);
-            //Step 2: Task 4
-          navigate('/');
-        } else {
-            //Step 2: Task 5
-          document.getElementById("email").value="";
-          document.getElementById("password").value="";
-          setIncorrect("Wrong password or Username. Try again.");
-          setTimeout(() => {
-            setIncorrect("");
-          }, 2000);
-        }
-
+      } else {
+        console.log(json.error);  //alert(json.error);
       }
-
+    }
+  };
 
   return (
     <div>
@@ -74,7 +75,7 @@ const Login = () => {
             <h2>Login</h2>
           </div>
         <div className="login-form">
-        <form onSubmit={handleLogin}>
+        <form onSubmit={login}>
          <div className="form-group">
           <label htmlFor="email">Email</label>
          <input 
@@ -116,7 +117,7 @@ const Login = () => {
           <div className="login-text">
             Are you a new member? 
             <span>
-              <Link to="/app/signup" style={{ color: '#2190FF' }}>
+              <Link to="/signup" style={{ color: '#2190FF' }}>
                  Sign Up Here
               </Link>
             </span>
