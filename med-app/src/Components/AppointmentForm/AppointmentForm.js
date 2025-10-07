@@ -1,4 +1,5 @@
-import React, { useState ,useEffect} from 'react'
+import React, { useState ,useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AppointmentForm.css';
 
 const AppointmentForm = ({ doctorName, doctorSpeciality,experience, rating,  onSubmit }) => {
@@ -6,13 +7,18 @@ const AppointmentForm = ({ doctorName, doctorSpeciality,experience, rating,  onS
     const [phoneNumber, setPhoneNumber] = useState('');
     const [appointmentDate, setAppointmentDate] = useState('');
     const [selectedSlot, setSelectedSlot] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
+         const authtoken = sessionStorage.getItem("auth-token");
+         if (!authtoken) {
+            navigate("/login");
+         }
         const storedName = sessionStorage.getItem('name');
         const storedPhone = sessionStorage.getItem('phone');
         if (storedName) setName(storedName);
         if (storedPhone) setPhoneNumber(storedPhone);
-    }, []);
+    },[]);
 
     // Available time slots
     const timeSlots = [
@@ -41,14 +47,6 @@ const AppointmentForm = ({ doctorName, doctorSpeciality,experience, rating,  onS
             doctorName,
             doctorSpeciality 
         });
-        localStorage.setItem('doctorName',doctorName);
-        localStorage.setItem('doctorSpeciality',doctorSpeciality);
-        localStorage.setItem('experience',experience);
-        localStorage.setItem('ratings',rating);
-        localStorage.setItem('phone',phoneNumber);
-        localStorage.setItem('name',name);
-        localStorage.setItem('appointmentDate',appointmentDate);
-        localStorage.setItem('selectedSlot',selectedSlot);
         // Clear form fields after submission
         setName('');
         setPhoneNumber('');

@@ -1,25 +1,36 @@
-// Reports.jsx
-import React from 'react';
+// Reports
+import React, { useEffect, useState } from 'react';
 import './ReportsLayout.css';
 
 const Reports = () => {
-  const data = [
-    {
-      id: 1,
-      name: 'Dr. John Doe',
-      specialty: 'Cardiology',
-    },
-    {
-      id: 2,
-      name: 'Dr. Jane Smith',
-      specialty: 'Dermatology',
-    },
-  ];
+
+  const [doctorData, setDoctorData] = useState([]);
+  const [isData,setCheck] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const data_ = JSON.parse(localStorage.getItem('doctorAppointments')) || [];
+    const data = Object.values(data_).flat()
+    if( data.length > 0 )
+     {
+      setCheck(true);
+     }
+    else{
+       setCheck(false);
+     }
+    const loggedIn = sessionStorage.getItem("loggedIn");
+    if (loggedIn==="true") {
+      setIsLoggedIn(true);
+     }
+    if (data ){
+      setDoctorData(data);
+    }
+  }, []);
 
   return (
-    <div className="reports-container" style={{ marginTop: '10%' ,width:'100%', marginLeft:'-105%'}}>
+    <div className="reports-container" style={{ marginTop: '10%' ,width:'100%', marginLeft:'-145%'}}>
       <h1>Reports</h1>
-      <table className="reports-table" style={{ width: '900px' }}>
+      <table className="reports-table" style={{ width: '1100px' }}>
         <thead>
           <tr>
             <th>Serial Number</th>
@@ -30,11 +41,11 @@ const Reports = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((doctor) => (
+          {doctorData.map((doctor) => (
             <tr key={doctor.id}>
               <td>{doctor.id}</td>
-              <td>{doctor.name}</td>
-              <td>{doctor.specialty}</td>
+              <td>{doctor.doctorName}</td>
+              <td>{doctor.doctorSpeciality}</td>
               <td>
                 <a href='patient_report.pdf' 
                  className="action-button view">View Report</a>

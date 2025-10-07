@@ -50,12 +50,12 @@ const BookingConsultation = () => {
             window.location.reload()
         }
     };
-    const navigate = useNavigate();
+    
     useEffect(() => {
         getDoctorsDetails();
          const authtoken = sessionStorage.getItem("auth-token");
          if (!authtoken) {
-            navigate("/login");
+            //navigate("/login");
          }
     }, [searchParams])
 

@@ -189,3 +189,20 @@ button:hover {
   cursor: pointer;
   /* color: rgb(249, 60, 60); */
 }
+
+.book-appointment-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
+
+.available-appointment {
+  background-color: #007bff; /* Blue for available */
+}
+
+.cancel-appointment {
+  background-color: #dc3545; /* Red for booked */
+}

@@ -59,6 +59,7 @@ router.post('/register',[
         const hash = await bcrypt.hash(req.body.password, salt);
         
         const newUser =  await UserSchema.create({
+            role: req.body.role,
             email: req.body.email,
             name: req.body.name,
             password: hash,

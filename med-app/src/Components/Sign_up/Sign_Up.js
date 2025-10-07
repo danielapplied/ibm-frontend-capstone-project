@@ -11,6 +11,7 @@ const Sign_Up = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
     const [showerr, setShowerr] = useState(''); // State to show error messages
     const navigate = useNavigate(); // Navigation hook from react-router
 
@@ -29,6 +30,7 @@ const Sign_Up = () => {
                 email: email,
                 password: password,
                 phone: phone,
+                role: role
             }),
         });
 
@@ -72,6 +74,25 @@ const Sign_Up = () => {
                    </div>
                 <div className="signup-form">
                     <form method="POST" onSubmit={register}>
+
+               <div className="form-group">
+                 <label htmlFor="role">Role</label>
+                    <select
+                    id="role"
+                     name="role"
+                     className="form-control"
+                     value={role}
+                     onChange={(e) => setRole(e.target.value)}
+                     required
+                    >
+                      <option value="">Select your role</option>
+                      <option value="Doctor">Doctor</option>
+                      <option value="Patient">Patient</option>
+                      <option value="Admin">Admin</option>
+                      </select>
+                       {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
+                     </div>
+
                         <div className="form-group">
                             <label htmlFor="name">Name</label>
                             <input value={name} onChange={(e) => setName(e.target.value)} 

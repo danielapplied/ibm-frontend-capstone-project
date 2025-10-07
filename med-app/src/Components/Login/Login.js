@@ -107,9 +107,12 @@ const Login = () => {
         Login
        </button> 
        <br/>
-       <span style={{color:'red',height:'.5cm',display:'block',fontStyle:'italic',fontSize:'14px'}}>{incorrect}</span>
+       <span style={{color:'red',height:'.5cm',display:'block',
+                fontStyle:'italic',fontSize:'16px',marginTop:'10px'}}>
+        {incorrect}
+        </span>
        </div>
-        <div className="login-text">
+        <div className="login-text" style={{margin:'20px auto', fontSize:'16px'}}>
          Forgot Password?
          </div>
         </form>

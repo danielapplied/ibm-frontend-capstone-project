@@ -8,10 +8,24 @@ const ReviewForm = () => {
   const [reviewerName, setReviewerName] = useState('');
   const [rating, setRating] = useState(0);
   const [reviews, setReviews] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isData,setCheck] = useState(false);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('doctorData'));
-    if (data) {
+    const data_ = JSON.parse(localStorage.getItem('doctorAppointments')) || [];
+    const data = Object.values(data_).flat()
+    if( data.length > 0 )
+     {
+      setCheck(true);
+     }
+    else{
+       setCheck(false);
+     }
+    const loggedIn = sessionStorage.getItem("loggedIn");
+    if (loggedIn==="true") {
+      setIsLoggedIn(true);
+     }
+    if (data ){
       setDoctorData(data);
     }
   }, []);
@@ -40,6 +54,8 @@ const ReviewForm = () => {
 
   return (
     <div className="review-container" style={{ marginTop: '10%', width: '60%', marginLeft: '20%' }}>
+     { isLoggedIn && isData && (
+       <>
       <h1>Reviews</h1>
       <table className="review-table">
         <thead>
@@ -55,8 +71,8 @@ const ReviewForm = () => {
           {doctorData.map((doctor) => (
             <tr key={doctor.id}>
               <td>{doctor.id}</td>
-              <td>{doctor.name}</td>
-              <td>{doctor.speciality}</td>
+              <td>{doctor.doctorName}</td>
+              <td>{doctor.doctorSpeciality}</td>
               <td>
                 <button
                   className="feedback-button"
@@ -73,15 +89,21 @@ const ReviewForm = () => {
                     Rating: {'★'.repeat(reviews[doctor.id].rating)}
                   </div>
                 ) : (
-                  '—'
+                <button  disabled
+                  className="feedback-button" style={{backgroundColor: 'gray', cursor: 'not-allowed'}}
+                  onClick={() => handleFeedbackClick(doctor.id)}
+                  >
+                  View Review
+                </button>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      {selectedDoctorId && (
+       </>
+      )}
+      { selectedDoctorId && (
         <div className="review-form">
           <h2>Give Your Review</h2>
           <input
